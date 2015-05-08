@@ -837,7 +837,7 @@ static int32_t msm_sensor_get_dt_data(struct device_node *of_node,
 	uint16_t gpio_array_size = 0;
 	uint32_t id_info[3];
 	
-#if defined(CONFIG_MACH_DUMMY) || defined(CONFIG_MACH_DUMMY) || defined(CONFIG_MACH_DUMMY) || defined(CONFIG_MACH_DUMMY) || defined(CONFIG_MACH_DUMMY)
+#if defined(CONFIG_MACH_MEC_DUG) || defined(CONFIG_MACH_MEC_UL) || defined(CONFIG_MACH_MEC_TL) || defined(CONFIG_MACH_MEC_WHL) || defined(CONFIG_MACH_MEC_DWG)
 	char *HWver;
 #endif
 	
@@ -867,7 +867,7 @@ static int32_t msm_sensor_get_dt_data(struct device_node *of_node,
 		goto ERROR1;
 	}
 
-#if defined(CONFIG_MACH_DUMMY) || defined(CONFIG_MACH_DUMMY) || defined(CONFIG_MACH_DUMMY) || defined(CONFIG_MACH_DUMMY) || defined(CONFIG_MACH_DUMMY)
+#if defined(CONFIG_MACH_MEC_DUG) || defined(CONFIG_MACH_MEC_UL) || defined(CONFIG_MACH_MEC_TL) || defined(CONFIG_MACH_MEC_WHL) || defined(CONFIG_MACH_MEC_DWG)
     
 if(strcmp(sensordata->sensor_name, "ov13850") ==0)
 {
