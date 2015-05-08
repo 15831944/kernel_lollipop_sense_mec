@@ -1368,7 +1368,7 @@ qpnp_chg_set_appropriate_vbatdet(struct qpnp_chg_chip *chip)
 	qpnp_chg_charge_en(chip, true);
 
 	
-	if (chip->disable_pwrpath_after_eoc)
+	if (chip->disable_pwrpath_after_eoc && is_batt_full_eoc_stop)
 		qpnp_chg_force_run_on_batt(chip, true);
 
 	wake_unlock(&chip->set_vbatdet_lock);
@@ -1966,6 +1966,7 @@ qpnp_chg_chgr_chg_fastchg_irq_handler(int irq, void *_chip)
 #endif
 
 	if (!chip->charging_disabled) {
+		is_batt_full_eoc_stop = false;
 		schedule_delayed_work(&chip->eoc_work,
 			msecs_to_jiffies(EOC_CHECK_PERIOD_MS));
 		pm_stay_awake(chip->dev);
@@ -4359,7 +4360,6 @@ int pm8941_set_charger_after_eoc(bool enable)
 		pr_err("called before init\n");
 		return -EINVAL;
 	}
-	is_batt_full_eoc_stop = false;
 
 	qpnp_chg_force_run_on_batt(the_chip, false);
 
