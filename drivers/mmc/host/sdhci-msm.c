@@ -2639,7 +2639,7 @@ static void sdhci_msm_disable_data_xfer(struct sdhci_host *host)
 	ret = readl_poll_timeout_noirq(msm_host->core_mem
 			+ CORE_SDCC_DEBUG_REG, value,
 			!(value & CORE_DEBUG_REG_AHB_HTRANS),
-			CORE_AHB_DATA_DELAY_US, 1);
+			CORE_AHB_DATA_DELAY_US, 500);
 	if (ret) {
 		pr_err("%s: %s: can't stop ongoing AHB bus access by ADMA\n",
 				mmc_hostname(host->mmc), __func__);

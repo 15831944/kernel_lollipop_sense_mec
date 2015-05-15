@@ -2905,7 +2905,7 @@ functions_show(struct device *pdev, struct device_attribute *attr, char *buf)
 	struct android_usb_function_holder *f_holder;
 	char *buff = buf;
 
-	mutex_lock(&dev->mutex);
+	mutex_lock(&function_bind_sem);
 
 	list_for_each_entry(conf, &dev->configs, list_item) {
 		if (buff != buf)
@@ -2916,7 +2916,7 @@ functions_show(struct device *pdev, struct device_attribute *attr, char *buf)
 					f_holder->f->name);
 	}
 
-	mutex_unlock(&dev->mutex);
+	mutex_unlock(&function_bind_sem);
 
 	if (buff != buf)
 		*(buff-1) = '\n';

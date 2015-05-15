@@ -130,6 +130,10 @@ static int gdsc_disable(struct regulator_dev *rdev)
 		if (ret)
 			dev_err(&rdev->dev, "%s disable timed out\n",
 				sc->rdesc.name);
+		if (!strcmp(sc->rdesc.name, "gdsc_mdss")) {
+			pr_err("MDSS GDSC disabled\n");
+			dump_stack();
+		}
 	} else {
 		for (i = sc->clock_count-1; i >= 0; i--)
 			clk_reset(sc->clocks[i], CLK_RESET_ASSERT);

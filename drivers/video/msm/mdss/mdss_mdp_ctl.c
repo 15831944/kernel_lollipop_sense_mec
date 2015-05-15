@@ -471,6 +471,7 @@ static void mdss_mdp_perf_calc_mixer(struct mdss_mdp_mixer *mixer,
 				apply_fudge = !(pipe->src_fmt->is_yuv)
 					|| !(pipe->flags
 					& MDP_SOURCE_ROTATED_90);
+				apply_fudge = apply_fudge | (pipe->src.w > pipe->src.h); 
 			}
 		}
 	}

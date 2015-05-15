@@ -689,11 +689,15 @@ static int mdss_mdp_video_display(struct mdss_mdp_ctl *ctl, void *arg)
 			WARN(rc == 0, "timeout (%d) waiting for vsync\n", rc);
 		}
 
+		video_vsync_irq_disable(ctl);
+
 		rc = mdss_iommu_ctrl(1);
 		if (IS_ERR_VALUE(rc)) {
 			pr_err("IOMMU attach failed\n");
+			video_vsync_irq_enable(ctl, true);
 			return rc;
 		}
+		video_vsync_irq_enable(ctl, true);
 
 		mdss_mdp_clk_ctrl(MDP_BLOCK_POWER_ON, false);
 

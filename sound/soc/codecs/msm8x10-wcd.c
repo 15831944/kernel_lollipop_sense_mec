@@ -178,9 +178,9 @@ struct msm8x10_wcd_priv {
 };
 
 static unsigned short rx_digital_gain_reg[] = {
-	MSM8X10_WCD_A_CDC_RX1_VOL_CTL_B2_CTL,
-	MSM8X10_WCD_A_CDC_RX2_VOL_CTL_B2_CTL,
-	MSM8X10_WCD_A_CDC_RX3_VOL_CTL_B2_CTL,
+	0,
+	0,
+	0,
 };
 
 static unsigned short tx_digital_gain_reg[] = {
@@ -484,9 +484,9 @@ static bool msm8x10_wcd_is_digital_gain_register(unsigned int reg)
 {
 	bool rtn = false;
 	switch (reg) {
-	case MSM8X10_WCD_A_CDC_RX1_VOL_CTL_B2_CTL:
-	case MSM8X10_WCD_A_CDC_RX2_VOL_CTL_B2_CTL:
-	case MSM8X10_WCD_A_CDC_RX3_VOL_CTL_B2_CTL:
+	case 0:
+	case 0:
+	case 0:
 	case MSM8X10_WCD_A_CDC_TX1_VOL_CTL_GAIN:
 	case MSM8X10_WCD_A_CDC_TX2_VOL_CTL_GAIN:
 		rtn = true;
@@ -508,7 +508,7 @@ static int msm8x10_wcd_volatile(struct snd_soc_codec *codec, unsigned int reg)
 
 	
 	if ((reg >= MSM8X10_WCD_A_CDC_IIR1_COEF_B1_CTL) &&
-		(reg <= MSM8X10_WCD_A_CDC_IIR2_COEF_B2_CTL))
+		(reg <= 10))
 		return 1;
 
 	if (msm8x10_wcd_is_digital_gain_register(reg))
@@ -986,7 +986,7 @@ static uint32_t get_iir_band_coeff(struct snd_soc_codec *codec,
 		* sizeof(uint32_t)) & 0x7F);
 
 	value |= snd_soc_read(codec,
-		(MSM8X10_WCD_A_CDC_IIR1_COEF_B2_CTL + 64 * iir_idx));
+		(0 + 64 * iir_idx));
 
 	snd_soc_write(codec,
 		(MSM8X10_WCD_A_CDC_IIR1_COEF_B1_CTL + 64 * iir_idx),
@@ -994,7 +994,7 @@ static uint32_t get_iir_band_coeff(struct snd_soc_codec *codec,
 		* sizeof(uint32_t) + 1) & 0x7F);
 
 	value |= (snd_soc_read(codec,
-		(MSM8X10_WCD_A_CDC_IIR1_COEF_B2_CTL + 64 * iir_idx)) << 8);
+		(0 + 64 * iir_idx)) << 8);
 
 	snd_soc_write(codec,
 		(MSM8X10_WCD_A_CDC_IIR1_COEF_B1_CTL + 64 * iir_idx),
@@ -1002,7 +1002,7 @@ static uint32_t get_iir_band_coeff(struct snd_soc_codec *codec,
 		* sizeof(uint32_t) + 2) & 0x7F);
 
 	value |= (snd_soc_read(codec,
-		(MSM8X10_WCD_A_CDC_IIR1_COEF_B2_CTL + 64 * iir_idx)) << 16);
+		(0 + 64 * iir_idx)) << 16);
 
 	snd_soc_write(codec,
 		(MSM8X10_WCD_A_CDC_IIR1_COEF_B1_CTL + 64 * iir_idx),
@@ -1011,7 +1011,7 @@ static uint32_t get_iir_band_coeff(struct snd_soc_codec *codec,
 
 	
 	value |= ((snd_soc_read(codec,
-	  (MSM8X10_WCD_A_CDC_IIR1_COEF_B2_CTL + 64 * iir_idx)) & 0x3f) << 24);
+	  (0 + 64 * iir_idx)) & 0x3f) << 24);
 
 	return value;
 
@@ -1061,20 +1061,20 @@ static void set_iir_band_coeff(struct snd_soc_codec *codec,
 				uint32_t value)
 {
 	snd_soc_write(codec,
-		(MSM8X10_WCD_A_CDC_IIR1_COEF_B2_CTL + 64 * iir_idx),
+		(0 + 64 * iir_idx),
 		(value & 0xFF));
 
 	snd_soc_write(codec,
-		(MSM8X10_WCD_A_CDC_IIR1_COEF_B2_CTL + 64 * iir_idx),
+		(0 + 64 * iir_idx),
 		(value >> 8) & 0xFF);
 
 	snd_soc_write(codec,
-		(MSM8X10_WCD_A_CDC_IIR1_COEF_B2_CTL + 64 * iir_idx),
+		(0 + 64 * iir_idx),
 		(value >> 16) & 0xFF);
 
 	
 	snd_soc_write(codec,
-		(MSM8X10_WCD_A_CDC_IIR1_COEF_B2_CTL + 64 * iir_idx),
+		(0 + 64 * iir_idx),
 		(value >> 24) & 0x3F);
 
 }
@@ -1164,13 +1164,13 @@ static const struct snd_kcontrol_new msm8x10_wcd_snd_controls[] = {
 		       0, 12, 1, line_gain),
 
 	SOC_SINGLE_S8_TLV("RX1 Digital Volume",
-			  MSM8X10_WCD_A_CDC_RX1_VOL_CTL_B2_CTL,
+			  0,
 			  -84, 40, digital_gain),
 	SOC_SINGLE_S8_TLV("RX2 Digital Volume",
-			  MSM8X10_WCD_A_CDC_RX2_VOL_CTL_B2_CTL,
+			  0,
 			  -84, 40, digital_gain),
 	SOC_SINGLE_S8_TLV("RX3 Digital Volume",
-			  MSM8X10_WCD_A_CDC_RX3_VOL_CTL_B2_CTL,
+			  0,
 			  -84, 40, digital_gain),
 
 	SOC_SINGLE_S8_TLV("DEC1 Volume",
@@ -1191,7 +1191,7 @@ static const struct snd_kcontrol_new msm8x10_wcd_snd_controls[] = {
 			  MSM8X10_WCD_A_CDC_IIR1_GAIN_B1_CTL,
 			  -84, 40, digital_gain),
 	SOC_SINGLE_S8_TLV("IIR1 INP2 Volume",
-			  MSM8X10_WCD_A_CDC_IIR1_GAIN_B2_CTL,
+			  0,
 			  -84, 40, digital_gain),
 	SOC_SINGLE_S8_TLV("IIR1 INP3 Volume",
 			  MSM8X10_WCD_A_CDC_IIR1_GAIN_B3_CTL,
@@ -1313,7 +1313,7 @@ static const struct soc_enum rx_mix1_inp2_chain_enum =
 	SOC_ENUM_SINGLE(MSM8X10_WCD_A_CDC_CONN_RX1_B1_CTL, 3, 6, rx_mix1_text);
 
 static const struct soc_enum rx_mix1_inp3_chain_enum =
-	SOC_ENUM_SINGLE(MSM8X10_WCD_A_CDC_CONN_RX1_B2_CTL, 0, 6, rx_mix1_text);
+	SOC_ENUM_SINGLE(0, 0, 6, rx_mix1_text);
 
 static const struct soc_enum rx2_mix1_inp1_chain_enum =
 	SOC_ENUM_SINGLE(MSM8X10_WCD_A_CDC_CONN_RX2_B1_CTL, 0, 6, rx_mix1_text);
@@ -2637,7 +2637,7 @@ static const struct msm8x10_wcd_reg_mask_val msm8x10_wcd_reg_defaults[] = {
 
 	
 	MSM8X10_WCD_REG_VAL(MSM8X10_WCD_A_CDC_CLSG_FREQ_THRESH_B1_CTL, 0x05),
-	MSM8X10_WCD_REG_VAL(MSM8X10_WCD_A_CDC_CLSG_FREQ_THRESH_B2_CTL, 0x0C),
+	MSM8X10_WCD_REG_VAL(0, 0x0C),
 	MSM8X10_WCD_REG_VAL(MSM8X10_WCD_A_CDC_CLSG_FREQ_THRESH_B3_CTL, 0x1A),
 	MSM8X10_WCD_REG_VAL(MSM8X10_WCD_A_CDC_CLSG_FREQ_THRESH_B4_CTL, 0x47),
 	MSM8X10_WCD_REG_VAL(MSM8X10_WCD_A_CDC_CLSG_GAIN_THRESH_CTL, 0x23),
@@ -2969,7 +2969,7 @@ static int msm8x10_wcd_setup_zdet(struct wcd9xxx_mbhc *mbhc,
 				    0x02, 0x00);
 
 		
-		__wr(MSM8X10_WCD_A_CDC_RX1_B2_CTL, 0xFF, 0x00);
+		__wr(0, 0xFF, 0x00);
 		
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX1_B1_CTL, 0x00);
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX1_B1_CTL, 0x00);
@@ -2977,7 +2977,7 @@ static int msm8x10_wcd_setup_zdet(struct wcd9xxx_mbhc *mbhc,
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX1_B1_CTL, 0x00);
 
 		
-		__wr(MSM8X10_WCD_A_CDC_RX2_B2_CTL, 0xFF, 0x00);
+		__wr(0, 0xFF, 0x00);
 		
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX2_B1_CTL, 0x00);
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX2_B1_CTL, 0x00);
@@ -3005,14 +3005,14 @@ static int msm8x10_wcd_setup_zdet(struct wcd9xxx_mbhc *mbhc,
 		
 		snd_soc_write(codec, WCD9XXX_A_RX_HPH_OCP_CTL, 0x6D);
 
-		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX1_B2_CTL, 0x00);
+		snd_soc_write(codec, 0, 0x00);
 		
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX1_B1_CTL, 0x00);
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX1_B1_CTL, 0x1F);
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX1_B1_CTL, 0xE3);
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX1_B1_CTL, 0x08);
 
-		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX2_B2_CTL, 0x00);
+		snd_soc_write(codec, 0, 0x00);
 		
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX2_B1_CTL, 0x00);
 		snd_soc_write(codec, MSM8X10_WCD_A_CDC_RX2_B1_CTL, 0x1F);

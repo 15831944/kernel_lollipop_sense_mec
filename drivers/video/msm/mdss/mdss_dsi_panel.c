@@ -561,6 +561,7 @@ static int mdss_dsi_panel_on(struct mdss_panel_data *pdata)
 		pdata->panel_info.first_power_on = 0;
 		pr_info("panel on already\n");
 	} else if (ctrl->on_cmds.cmd_cnt) {
+		msleep(10);
 		mdss_dsi_panel_cmds_send(ctrl, &ctrl->on_cmds);
 	}
 

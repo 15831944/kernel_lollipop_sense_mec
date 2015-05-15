@@ -381,10 +381,10 @@ static const struct comp_sample_dependent_params comp_samp_params[] = {
 };
 
 static unsigned short rx_digital_gain_reg[] = {
-	TAPAN_A_CDC_RX1_VOL_CTL_B2_CTL,
-	TAPAN_A_CDC_RX2_VOL_CTL_B2_CTL,
-	TAPAN_A_CDC_RX3_VOL_CTL_B2_CTL,
-	TAPAN_A_CDC_RX4_VOL_CTL_B2_CTL,
+	0,
+	0,
+	0,
+	0,
 };
 
 static unsigned short tx_digital_gain_reg[] = {
@@ -1037,7 +1037,7 @@ static int tapan_config_compander(struct snd_soc_dapm_widget *w,
 
 	dev_dbg(codec->dev, "%s: %s event %d compander %d, enabled %d",
 		__func__, w->name, event, comp, tapan->comp_enabled[comp]);
-
+	mdelay(3);
 	if (!tapan->comp_enabled[comp])
 		return 0;
 
@@ -2166,7 +2166,7 @@ static int tapan_codec_enable_lineout(struct snd_soc_dapm_widget *w,
 #if defined(CONFIG_MACH_DUMMY) || defined(CONFIG_MACH_DUMMY)
 		usleep_range(5000, 5010);
 #else
-		usleep_range(3000, 3010);
+		usleep_range(5000, 5010);
 #endif
 		break;
 	case SND_SOC_DAPM_POST_PMD:

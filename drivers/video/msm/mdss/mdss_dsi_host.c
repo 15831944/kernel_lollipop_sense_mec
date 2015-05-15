@@ -963,6 +963,7 @@ static int mdss_dsi_cmd_dma_tx(struct mdss_dsi_ctrl_pdata *ctrl,
 	int domain = MDSS_IOMMU_DOMAIN_UNSECURE;
 	char *bp;
 	unsigned long size, addr;
+	int is_iommu_attached = 0;
 
 	bp = tp->data;
 
@@ -970,7 +971,8 @@ static int mdss_dsi_cmd_dma_tx(struct mdss_dsi_ctrl_pdata *ctrl,
 	size = ALIGN(tp->len, SZ_4K);
 
 
-	if (is_mdss_iommu_attached()) {
+	is_iommu_attached = is_mdss_iommu_attached();
+	if (is_iommu_attached) {
 		ret = msm_iommu_map_contig_buffer(tp->dmap,
 					mdss_get_iommu_domain(domain), 0,
 					size, SZ_4K, 0, &(addr));
@@ -1011,7 +1013,7 @@ static int mdss_dsi_cmd_dma_tx(struct mdss_dsi_ctrl_pdata *ctrl,
 	else
 		ret = tp->len;
 
-	if (is_mdss_iommu_attached())
+	if (is_iommu_attached)
 		msm_iommu_unmap_contig_buffer(addr,
 			mdss_get_iommu_domain(domain), 0, size);
 

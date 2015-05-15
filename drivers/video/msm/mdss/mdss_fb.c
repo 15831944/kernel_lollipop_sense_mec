@@ -1946,10 +1946,16 @@ static int __mdss_fb_display_thread(void *data)
 
 		if (mfd->panel_info->skip_frame) {
 			if (!frame_count) {
-				if (pwrctrl_pdata.bkl_config)
+				if (pwrctrl_pdata.bkl_config) {
 					pwrctrl_pdata.bkl_config(pdata, 0);
-				else
+				} else {
+#if defined(CONFIG_ARCH_MSM8226)
+					memset(mfd->fbi->screen_base, 0, mfd->fbi->fix.smem_len);
+#else
 					pdata->set_backlight(pdata, 0);
+#endif
+
+				}
 			}
 			frame_count++;
 			if (frame_count > 2)

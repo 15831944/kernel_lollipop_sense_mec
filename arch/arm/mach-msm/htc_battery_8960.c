@@ -265,6 +265,7 @@ struct mutex batt_set_alarm_lock;
 static int fb_notifier_callback(struct notifier_block *self,
                                  unsigned long event, void *data);
 #endif
+static bool is_fb_notifier_ready = false;
 
 struct dec_level_by_current_ua {
 	int threshold_ua;
@@ -2180,9 +2181,55 @@ static void batt_level_adjust(unsigned long time_since_last_update_ms)
 	first = 0;
 }
 
+#define SCREEN_FILE_NODE_PATH "sys/class/graphics/fb0/show_blank_event"
+#define SCREEN_FILE_NODE_SIZE 18
+int update_screen_status_by_filenode (void)
+{
+	char file_node_data[SCREEN_FILE_NODE_SIZE];
+	struct file *filp = NULL;
+	int  rc;
+
+	filp = filp_open(SCREEN_FILE_NODE_PATH, O_RDONLY, 0);
+	if (IS_ERR(filp)) {
+		pr_warn("%s	Open file node \"show_blank_event\" fail.", __func__);
+		return -EINVAL;
+	}
+
+	rc = filp->f_op->read(filp, file_node_data, SCREEN_FILE_NODE_SIZE, &filp->f_pos);
+	if (rc < 0) {
+		filp_close(filp, NULL);
+		pr_warn("%s	Read file node \"show_blank_event\" fail.", __func__);
+		return -EINVAL;
+	}
+
+	filp_close(filp, NULL);
+
+	if (strcmp( "panel_power_on = ", file_node_data)) {
+		if (file_node_data[SCREEN_FILE_NODE_SIZE - 1] == '0') {
+			htc_batt_info.state |= STATE_EARLY_SUSPEND;
+			BATT_LOG("%s: Screen is OFF", __func__);
+		} else {
+			htc_batt_info.state &= ~STATE_EARLY_SUSPEND;
+			BATT_LOG("%s: Screen is ON", __func__);
+		}
+	} else {
+		pr_err("%s: The patterm of file ndoe is not correct, %s.", __func__, file_node_data);
+		return -EINVAL;
+	}
+
+	return 0;
+}
 
 static void batt_update_limited_charge(void)
 {
+	int rc;
+
+	if (!htc_batt_info.fb_notif.notifier_call || !is_fb_notifier_ready) {
+		rc = update_screen_status_by_filenode();
+		if (rc)
+			return;
+	}
+
 	if (htc_batt_info.state & STATE_EARLY_SUSPEND) {
 		
 		if ((!(chg_limit_reason & HTC_BATT_CHG_LIMIT_BIT_THRML)) &&
@@ -2808,6 +2855,10 @@ static int fb_notifier_callback(struct notifier_block *self,
 {
 	struct fb_event *evdata = data;
 	int *blank;
+	static bool first = true;
+
+	if(first)
+		is_fb_notifier_ready = true;
 
 	if (evdata && evdata->data && event == FB_EVENT_BLANK) {
 		blank = evdata->data;
@@ -2828,6 +2879,7 @@ static int fb_notifier_callback(struct notifier_block *self,
 		}
 	}
 
+	first = false;
 	return 0;
 }
 #elif defined(CONFIG_HAS_EARLYSUSPEND)
